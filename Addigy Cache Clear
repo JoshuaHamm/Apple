@@ -1,0 +1,9 @@
+#Cleans out Addigy cached items
+
+if [ -d "/Library/Addigy/ansible/packages" ]; then
+    rm -Rf /Library/Addigy/ansible/packages/*
+fi
+
+if [ -d "/Library/Addigy/download-cache/downloaded" ]; then
+    rm -Rf /Library/Addigy/download-cache/downloaded/*
+fi
