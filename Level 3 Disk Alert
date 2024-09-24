@@ -1,0 +1,86 @@
+import os
+import re
+import subprocess
+from urllib.parse import quote
+
+print("Original Ticket Notes: ")
+
+user_input = ""
+
+diskFree = ""
+diskUsage = ""
+totalDisk = ""
+customer = ""
+
+while True:
+    line = input()
+    if "Disk Usage: " in line and "%" in line and any(char.isdigit() for char in line):
+        diskUsage = line.split(":")[1].strip()
+        diskUsage = diskUsage[:-2].strip()
+        user_input += line + "\n"
+        break
+    user_input += line + "\n"
+
+deviceName = ""
+deviceState = ""
+date = ""
+time = ""
+
+for line in user_input.split("\n"):
+    if line.startswith("Device:"):
+        deviceName = line.split(":")[1].strip()
+    elif line.startswith("Issue:"):
+        datetime_str = line.split("At ")[1].split(" the")[0]
+        date_str, time_str = datetime_str.split(" ")
+        date_parts = date_str.split("-")
+        date = "{}/{}/{}".format(date_parts[1], date_parts[2], date_parts[0])
+        hour, minute, second = time_str.split(":")
+        hour = int(hour)
+        if hour >= 12:
+            time = "{}:{} PM".format(hour if hour == 12 else hour - 12, minute)
+        else:
+            time = "{}:{} AM".format(hour if hour > 0 else 12, minute)
+
+        words = line.split()
+        deviceState = words[-2]
+
+    elif line.startswith("Total disk size:"):
+        totalDisk = line.split(":")[1].strip()
+    elif line.startswith("Disk free space:"):
+        diskFree = line.split(":")[1].strip()
+    elif line.startswith("Customer:"):
+        customer = line.split(":")[1].strip()
+
+while True:
+    subjectLine = input("Ticket Summary Line: ")
+    if "Service Ticket #" not in subjectLine:
+        print("The input does not contain 'Service Ticket #'. Please try again.")
+    else:
+        break  # Exit the loop if the condition is met
+
+# Prepare the email content
+subject = subjectLine
+body = f"""
+Parsed Information:
+Customer: {customer}
+Device: {deviceName}
+Issue Date: {date}
+Issue Time: {time}
+Device State: {deviceState}
+Total Disk Size: {totalDisk}
+Disk Free Space: {diskFree}
+Disk Usage: {diskUsage}%
+
+Grab screenshots from nCentral or Addigy
+"""
+
+# Encode the subject and body for the mailto URL
+subject_encoded = quote(subject)
+body_encoded = quote(body)
+
+# Create the mailto URL
+mailto_url = f"mailto:help@nexigen.com?subject={subject_encoded}&body={body_encoded}"
+
+# Open the default mail client with the mailto URL
+subprocess.run(["open", mailto_url])
+
