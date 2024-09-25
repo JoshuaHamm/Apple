@@ -1,0 +1,2 @@
+chmod +x verify_all_volumes.sh
+./verify_all_volumes.sh
