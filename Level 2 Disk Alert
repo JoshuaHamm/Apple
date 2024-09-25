@@ -74,13 +74,6 @@ def open_mail_client(sender, receiver, subject, body):
     mailto_link = f"mailto:{receiver}?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
     subprocess.run(["open", mailto_link])
 
-def save_html_email(body, filename):
-    downloads_folder = os.path.join(os.path.expanduser('~'), 'Downloads')
-    filepath = os.path.join(downloads_folder, filename)
-    with open(filepath, 'w') as email_file:
-        email_file.write(body)
-    return filepath
-
 if __name__ == "__main__":
     email_sender = sender
     receiver = "; ".join(receivers)
@@ -93,8 +86,5 @@ if __name__ == "__main__":
         If this is something you would like Nexigen to investigate further billed as Time and Material, please let us know!
         """
 
-    filename = "Disk C Alert for " + deviceName + ".html"
-
-    filepath = save_html_email(body, filename)
     open_mail_client(sender, receiver, subject, body)
-    print(f"Email saved to Downloads folder as {filename}.")
+    print("Email client opened with the composed email.")
