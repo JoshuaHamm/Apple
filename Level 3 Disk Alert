@@ -73,7 +73,6 @@ Disk Usage: {diskUsage}%
 
 Grab screenshots from nCentral or Addigy
 """
-
 # Encode the subject and body for the mailto URL
 subject_encoded = quote(subject)
 body_encoded = quote(body)

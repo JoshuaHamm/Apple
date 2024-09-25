@@ -8,4 +8,10 @@ for volume in $volumes;
 do 
 	echo "Verifying volume: $volume"
 	diskutil verifyVolume $volume
+	
+	# Check if the verifyVolume command failed
+	if [ $? -ne 0 ]; then
+		echo "Error detected in volume: $volume. Attempting to repair..."
+		diskutil repairVolume $volume
+	fi
 done
