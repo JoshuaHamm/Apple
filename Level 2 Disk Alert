@@ -1,12 +1,11 @@
 import os
 import re
 import subprocess
-import urllib.parse
+from urllib.parse import quote
 
 print("Original Ticket Notes: ")
 
 user_input = ""
-
 diskFree = ""
 diskUsage = ""
 totalDisk = ""
@@ -71,7 +70,7 @@ receivers = ["help@nexigen.com", contactEmail]
 print(diskUsage + "--------------------------")
 
 def open_mail_client(sender, receiver, subject, body):
-    mailto_link = f"mailto:{receiver}?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
+    mailto_link = f"mailto:{receiver}?subject={quote(subject)}&body={quote(body)}"
     subprocess.run(["open", mailto_link])
 
 if __name__ == "__main__":
