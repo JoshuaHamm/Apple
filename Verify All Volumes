@@ -1,3 +1,3 @@
 cd /Library/Addigy/ansible/packages
-hmod +x verify_all_volumes.sh
+chmod +x verify_all_volumes.sh
 ./verify_all_volumes.sh
