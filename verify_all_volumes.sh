@@ -13,5 +13,12 @@ do
 	if [ $? -ne 0 ]; then
 		echo "Error detected in volume: $volume. Attempting to repair..."
 		diskutil repairVolume $volume
+		
+		# Check if the repairVolume command failed
+		if [ $? -ne 0 ]; then
+			echo "Repair failed for volume: $volume. Errors are still present."
+		else
+			echo "Repair successful for volume: $volume."
+		fi
 	fi
 done
