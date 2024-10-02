@@ -1,7 +1,5 @@
-#!/bin/bash
-
+!/bin/bash
 # Cleans out Addigy cached items
-
 # Function to calculate disk space cleared
 calculate_space_cleared() {
     local initial_space=$1

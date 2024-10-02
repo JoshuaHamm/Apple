@@ -1,5 +1,13 @@
-#!/bin/bash
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE":
+ * <hamm.joshua.t@gmail.com> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   Josh Hamm
+ * ----------------------------------------------------------------------------
+ */
 
+#!/bin/bash
 # Function to calculate disk space cleared
 calculate_space_cleared() {
     local initial_space=$1
