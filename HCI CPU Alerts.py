@@ -55,7 +55,7 @@ for line in user_input.split("\n"):
 UserOfProcess1, UserOfProcess2, UserOfProcess3, UserOfProcess4, UserOfProcess5 = users
 CPUUsageForProcess1, CPUUsageForProcess2, CPUUsageForProcess3, CPUUsageForProcess4, CPUUsageForProcess5 = cpu_usages
 
-subjectLine = "**Copy/Paste This as a Discussion Note in the Ticket**"
+subjectLine = ""
 
 sender = ""
 receivers = [""]
