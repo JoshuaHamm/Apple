@@ -63,23 +63,31 @@ while True:
         print("The input does not contain 'Service Ticket #'. Please try again.")
     else:
         break  # Exit the loop if the condition is met
-
-while True:
-    serviceTeam = input("Service Team: ")
-    if serviceTeam != '1' and serviceTeam != '2':
-        print("Service Team not Recognized. Please try again.")
-    else:
-        break  # Exit the loop if the condition is met
-
 while True:
     currentState = input("Current CPU State (Normal, Warning or Failed): ")
     if "normal" not in currentState.lower() and "warning" not in currentState.lower() and "failed" not in currentState.lower():
         print("CPU State not Recognized. Please try again.")
     else:
         break  # Exit the loop if the condition is met
+    
+while True:
+    client_name = input("Contact Name: ")
+    if not client_name:
+        print("The input is empty. Please try again.")
+    else:
+        break  # Exit the loop if the condition is met
+
+while True:
+    client_email = input("Contact Email: ")
+    if "@" not in client_email:
+        print("The input does not contain '@'. Please try again.")
+    else:
+        break  # Exit the loop if the condition is met
+
+
 
 sender = ""
-receivers = ["help@nexigen.com"]
+receivers = ["help@nexigen.com",client_email]
 
 def create_email(sender, receiver, subject, body):
     mailto_link = f"mailto:{receiver}?subject={subject}&body={body}"
@@ -89,10 +97,7 @@ if __name__ == "__main__":
     email_sender = sender
     receiver = "; ".join(receivers)
     subject = subjectLine
-    body = f"""
-    Attention Team {serviceTeam} Engineer —
-
-    --Client is Level 2
+    body = f"""Hi, {client_name}
 
     We received an alert that server {deviceName} entered a {deviceState} state on {date} at {time}. Below is more information about the Alert.
 
@@ -114,10 +119,7 @@ if __name__ == "__main__":
     {top_processes[3]} - {UserOfProcess4}
     {top_processes[4]} - {UserOfProcess5}
 
-    [Screenshot of CPU Utilization 1 Week]
-    [Screenshot of CPU Utilization 1 Month]
-
-    Please investigate the issue and work with client to determine if they would like assistance remediating the issue.
+    Please let us know if you would like Nexigen assistance with this.
     """
 
     create_email(sender, receiver, subject, body)
