@@ -4,7 +4,7 @@ import subprocess
 print("Original Ticket Notes: ")
 
 user_input = ""
-deviceName = None
+device_name = None
 date = None
 time = None
 cpu_usage = None
@@ -21,7 +21,7 @@ while True:
 
 for line in user_input.split("\n"):
     if line.startswith("Device:"):
-        deviceName = line.split(":")[1].strip()
+        device_name = line.split(":")[1].strip()
     elif line.startswith("Issue:"):
         datetime_str = line.split("At ")[1].split(" the")[0]
         date_str, time_str = datetime_str.split(" ")
@@ -35,7 +35,7 @@ for line in user_input.split("\n"):
             time = "{}:{} AM".format(hour if hour > 0 else 12, minute)
 
         words = line.split()
-        deviceState = words[-2]
+        device_state = words[-2]
     elif line.startswith("CPU Usage:"):
         cpu_usage = line.split(":")[1].strip()
     elif line.startswith("Top Process"):
@@ -54,18 +54,18 @@ for line in user_input.split("\n"):
         if match:
             cpu_usages[process_index] = match.group()
 
-UserOfProcess1, UserOfProcess2, UserOfProcess3, UserOfProcess4, UserOfProcess5 = users
-CPUUsageForProcess1, CPUUsageForProcess2, CPUUsageForProcess3, CPUUsageForProcess4, CPUUsageForProcess5 = cpu_usages
+user_of_process_1, user_of_process_2, user_of_process_3, user_of_process_4, user_of_process_5 = users
+cpu_usage_for_process_1, cpu_usage_for_process_2, cpu_usage_for_process_3, cpu_usage_for_process_4, cpu_usage_for_process_5 = cpu_usages
 
 while True:
-    subjectLine = input("Ticket Summary Line: ")
-    if "Service Ticket #" not in subjectLine:
+    subject_line = input("Ticket Summary Line: ")
+    if "Service Ticket #" not in subject_line:
         print("The input does not contain 'Service Ticket #'. Please try again.")
     else:
         break  # Exit the loop if the condition is met
 while True:
-    currentState = input("Current CPU State (Normal, Warning or Failed): ")
-    if "normal" not in currentState.lower() and "warning" not in currentState.lower() and "failed" not in currentState.lower():
+    current_state = input("Current CPU State (Normal, Warning or Failed): ")
+    if "normal" not in current_state.lower() and "warning" not in current_state.lower() and "failed" not in current_state.lower():
         print("CPU State not Recognized. Please try again.")
     else:
         break  # Exit the loop if the condition is met
@@ -84,10 +84,8 @@ while True:
     else:
         break  # Exit the loop if the condition is met
 
-
-
 sender = ""
-receivers = ["help@nexigen.com",client_email]
+receivers = ["help@nexigen.com", client_email]
 
 def create_email(sender, receiver, subject, body):
     mailto_link = f"mailto:{receiver}?subject={subject}&body={body}"
@@ -96,12 +94,12 @@ def create_email(sender, receiver, subject, body):
 if __name__ == "__main__":
     email_sender = sender
     receiver = "; ".join(receivers)
-    subject = subjectLine
+    subject = subject_line
     body = f"""Hi, {client_name}
 
-    We received an alert that server {deviceName} entered a {deviceState} state on {date} at {time}. Below is more information about the Alert.
+    We received an alert that server {device_name} entered a {device_state} state on {date} at {time}. Below is more information about the Alert.
 
-    The device is currently in a {currentState} State.
+    The device is currently in a {current_state} State.
 
     Total CPU Usage: {cpu_usage}
 
@@ -113,11 +111,11 @@ if __name__ == "__main__":
     {top_processes[4]} - {cpu_usages[4]}%
 
     Users of Top Processes:
-    {top_processes[0]} - {UserOfProcess1}
-    {top_processes[1]} - {UserOfProcess2}
-    {top_processes[2]} - {UserOfProcess3}
-    {top_processes[3]} - {UserOfProcess4}
-    {top_processes[4]} - {UserOfProcess5}
+    {top_processes[0]} - {user_of_process_1}
+    {top_processes[1]} - {user_of_process_2}
+    {top_processes[2]} - {user_of_process_3}
+    {top_processes[3]} - {user_of_process_4}
+    {top_processes[4]} - {user_of_process_5}
 
     Please let us know if you would like Nexigen assistance with this.
     """
