@@ -1,27 +1,26 @@
-import os
 import re
 import subprocess
 from urllib.parse import quote
 
-print("Original Ticket Notes: ")
+print("Initial Description: ")
 
 user_input = ""
-diskFree = ""
-diskUsage = ""
-totalDisk = ""
+disk_free = ""
+disk_usage = ""
+total_disk = ""
 
 while True:
     line = input()
     if "Disk Usage: " in line and "%" in line and any(char.isdigit() for char in line):
-        diskUsage = line.split(":")[1].strip()
-        diskUsage = diskUsage[:-2].strip()
+        disk_usage = line.split(":")[1].strip()
+        disk_usage = disk_usage[:-2].strip()
         user_input += line + "\n"
         break
     user_input += line + "\n"
 
     for line in user_input.split("\n"):
         if line.startswith("Device:"):
-            deviceName = line.split(":")[1].strip()
+            device_name = line.split(":")[1].strip()
         elif line.startswith("Issue:"):
             datetime_str = line.split("At ")[1].split(" the")[0]
             date_str, time_str = datetime_str.split(" ")
@@ -35,39 +34,39 @@ while True:
                 time = "{}:{} AM".format(hour if hour > 0 else 12, minute)
 
             words = line.split()
-            deviceState = words[-2]
+            device_state = words[-2]
 
         elif line.startswith("Total disk size:"):
-            totalDisk = line.split(":")[1].strip()
+            total_disk = line.split(":")[1].strip()
         elif line.startswith("Disk free space:"):
-            diskFree = line.split(":")[1].strip()
+            disk_free = line.split(":")[1].strip()
 
 while True:
-    subjectLine = input("Ticket Summary Line: ")
-    if "Service Ticket #" not in subjectLine:
+    subject_line = input("Ticket Summary Line: ")
+    if "Service Ticket #" not in subject_line:
         print("The input does not contain 'Service Ticket #'. Please try again.")
     else:
         break  # Exit the loop if the condition is met
 
 while True:
-    contactEmail = input("Contact Email: ")
+    contact_email = input("Contact Email: ")
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if re.match(pattern, contactEmail) is not None:
+    if re.match(pattern, contact_email) is not None:
         break # Exit the loop if the condition is met
     else:
         print("Invalid Email Address. Please try again.")
 
 while True:
-    contactFN = input("Contact First Name: ")
-    if contactFN is None:
+    contact_fn = input("Contact First Name: ")
+    if contact_fn is None:
         print("Contact First Name cannot be blank. Please try again.")
     else:
         break # Exit the loop if the condition is met
     
 sender = ""
-receivers = ["help@nexigen.com", contactEmail]
+receivers = ["help@nexigen.com", contact_email]
 
-print(diskUsage + "--------------------------")
+print(disk_usage + "--------------------------")
 
 def open_mail_client(sender, receiver, subject, body):
     mailto_link = f"mailto:{receiver}?subject={quote(subject)}&body={quote(body)}"
@@ -76,11 +75,11 @@ def open_mail_client(sender, receiver, subject, body):
 if __name__ == "__main__":
     email_sender = sender
     receiver = "; ".join(receivers)
-    subject = subjectLine
+    subject = subject_line
     body = f"""
-        {contactFN},
+        {contact_fn},
 
-        We received an alert that {deviceName} went into a {deviceState} state for disk usage on disk C. At the time of the alert, the disk was {diskUsage}% full having {diskFree} free of {totalDisk}.
+        We received an alert that {device_name} went into a {device_state} state for disk usage on disk C. At the time of the alert, the disk was {disk_usage}% full having {disk_free} free of {total_disk}.
 
         If this is something you would like Nexigen to investigate further billed as Time and Material, please let us know!
         """

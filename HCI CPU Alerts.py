@@ -1,11 +1,11 @@
-import os
 import re
 import subprocess
 
-print("Enter your input: ")
+print("Enter the initial description: ")
 
 user_input = ""
-deviceName = None
+subject_line = ""
+device_name = None
 date = None
 time = None
 cpu_usage = None
@@ -20,9 +20,17 @@ while True:
         break
     user_input += line + "\n"
 
+while True:
+    subject_line = input("Ticket Summary Line: ")
+    if "Service Ticket #" not in subject_line:
+        print("The input does not contain 'Service Ticket #'. Please try again.")
+    else:
+        break  # Exit the loop if the condition is met
+
+
 for line in user_input.split("\n"):
     if line.startswith("Device:"):
-        deviceName = line.split(":")[1].strip()
+        device_name = line.split(":")[1].strip()
     elif line.startswith("Issue:"):
         datetime_str = line.split("At ")[1].split(" the")[0]
         date_str, time_str = datetime_str.split(" ")
@@ -52,25 +60,23 @@ for line in user_input.split("\n"):
         if match:
             cpu_usages[process_index] = match.group()
 
-UserOfProcess1, UserOfProcess2, UserOfProcess3, UserOfProcess4, UserOfProcess5 = users
-CPUUsageForProcess1, CPUUsageForProcess2, CPUUsageForProcess3, CPUUsageForProcess4, CPUUsageForProcess5 = cpu_usages
-
-subjectLine = ""
+user_of_process_1, user_of_process_2, user_of_process_3, user_of_process_4, user_of_process_5 = users
+cpu_usage_for_process_1, cpu_usage_for_process_2, cpu_usage_for_process_3, cpu_usage_for_process_4, cpu_usage_for_process_5 = cpu_usages
 
 sender = ""
 receivers = [""]
 cc_recipients = ["help@nexigen.com"]
 
-def create_email(subject, body):
-    mailto_link = f"mailto:{','.join(receivers)}?cc={','.join(cc_recipients)}&subject={subject}&body={body}"
+
+def create_email(subject_line, body):
+    mailto_link = f"mailto:{','.join(receivers)}?cc={','.join(cc_recipients)}&subject={subject_line}&body={body}"
     subprocess.run(["open", mailto_link])
 
 if __name__ == "__main__":
-    subject = subjectLine
-    body = f"""
-    Attention Home City Ice IT —
+    subject = subject_line
+    body = f"""Attention Home City Ice IT —
 
-    We received an alert that server {deviceName} entered a failed state on {date} at {time}. Below is more information regarding the Alert.
+    We received an alert that server {device_name} entered a failed state on {date} at {time}. Below is more information regarding the Alert.
 
     Total CPU Usage: {cpu_usage}
 
@@ -82,11 +88,11 @@ if __name__ == "__main__":
     {top_processes[4]} - {cpu_usages[4]}%
 
     Users of Top Processes:
-    {top_processes[0]} - {UserOfProcess1}
-    {top_processes[1]} - {UserOfProcess2}
-    {top_processes[2]} - {UserOfProcess3}
-    {top_processes[3]} - {UserOfProcess4}
-    {top_processes[4]} - {UserOfProcess5}
+    {top_processes[0]} - {user_of_process_1}
+    {top_processes[1]} - {user_of_process_2}
+    {top_processes[2]} - {user_of_process_3}
+    {top_processes[3]} - {user_of_process_4}
+    {top_processes[4]} - {user_of_process_5}
 
     If you would like us to investigate the issue, please let us know!
     """

@@ -1,34 +1,32 @@
-import os
-import re
 import subprocess
 from urllib.parse import quote
 
-print("Original Ticket Notes: ")
+print("Initial Description: ")
 
 user_input = ""
 
-diskFree = ""
-diskUsage = ""
-totalDisk = ""
+disk_free = ""
+disk_usage = ""
+total_disk = ""
 customer = ""
 
 while True:
     line = input()
     if "Disk Usage: " in line and "%" in line and any(char.isdigit() for char in line):
-        diskUsage = line.split(":")[1].strip()
-        diskUsage = diskUsage[:-2].strip()
+        disk_usage = line.split(":")[1].strip()
+        disk_usage = disk_usage[:-2].strip()
         user_input += line + "\n"
         break
     user_input += line + "\n"
 
-deviceName = ""
-deviceState = ""
+device_name = ""
+device_state = ""
 date = ""
 time = ""
 
 for line in user_input.split("\n"):
     if line.startswith("Device:"):
-        deviceName = line.split(":")[1].strip()
+        device_name = line.split(":")[1].strip()
     elif line.startswith("Issue:"):
         datetime_str = line.split("At ")[1].split(" the")[0]
         date_str, time_str = datetime_str.split(" ")
@@ -42,36 +40,48 @@ for line in user_input.split("\n"):
             time = "{}:{} AM".format(hour if hour > 0 else 12, minute)
 
         words = line.split()
-        deviceState = words[-2]
+        device_state = words[-2]
 
     elif line.startswith("Total disk size:"):
-        totalDisk = line.split(":")[1].strip()
+        total_disk = line.split(":")[1].strip()
     elif line.startswith("Disk free space:"):
-        diskFree = line.split(":")[1].strip()
+        disk_free = line.split(":")[1].strip()
     elif line.startswith("Customer:"):
         customer = line.split(":")[1].strip()
 
 while True:
-    subjectLine = input("Ticket Summary Line: ")
-    if "Service Ticket #" not in subjectLine:
+    subject_line = input("Ticket Summary Line: ")
+    if "Service Ticket #" not in subject_line:
         print("The input does not contain 'Service Ticket #'. Please try again.")
     else:
         break  # Exit the loop if the condition is met
 
+while True:
+    service_team = input("Service Team: ")
+    if service_team == "1" or service_team == "2":
+        break
+    else:
+        print("Please enter a valid service team.")
+
 # Prepare the email content
-subject = subjectLine
-body = f"""
-Parsed Information:
+subject = subject_line
+body = f"""Attention Team {service_team} Engineer,
+Device is still in {device_state} state after remediation was ran. Please investigate the disk usage and take necessary actions.
+
 Customer: {customer}
-Device: {deviceName}
+Device: {device_name}
+(Insert screenshot of asset facts here)
+
 Issue Date: {date}
 Issue Time: {time}
-Device State: {deviceState}
-Total Disk Size: {totalDisk}
-Disk Free Space: {diskFree}
-Disk Usage: {diskUsage}%
+Device State: {device_state}
+Total Disk Size: {total_disk}
+Disk Free Space: {disk_free}
 
-Grab screenshots from nCentral or Addigy
+Disk Usage: {disk_usage}%
+(Insert Screenshot of Disk Usage here)
+
+
 """
 # Encode the subject and body for the mailto URL
 subject_encoded = quote(subject)
